@@ -2,6 +2,12 @@
 using namespace std;
 
 // Global variables and arrays
+struct logData {
+  short x;
+  short y;
+  short index = 0;
+};
+
 short grid[9][9] = {
         {0, 5, 8, 6, 0, 0, 0, 0, 9},
         {3, 0, 6, 0, 2, 5, 0, 7, 0},
@@ -287,10 +293,40 @@ void setLockedPositions() {
     }
 }
 
+void bruteForce() {
+  //Finds amount of unsolved units in the grid
+  short lLog = 0;
+  for(short y=0; y<9; ++y) {
+    for(short x=0; x<9; ++x) {
+      if(!grid[y][x]) ++lLog;
+    }
+  }
+  //Creates new array of length amount of unsolved units
+  logData *log = new logData[lLog];
+  //Inicializes array with all relevant data
+  short count = 0;
+  for(short y=0; y<9; ++y) {
+    for(short x=0; x<9; ++x) {
+      if(!grid[y][x]) {
+        log[count].x = x;
+        log[count].y = y;
+        ++count;
+      }
+    }
+  }
+  //Begin brute force
+  bool go;
+  do {
+    go = false;
+    //code
+  } while(go);
+}
+
 int main() {
 
     printGrid();
     simpleSolve();
+    setLockedPositions();
     printGrid();
 
     cout << endl;
