@@ -3,15 +3,15 @@ using namespace std;
 
 // Global variables and arrays
 short grid[9][9] = {
-        {0, 0, 0, 1, 0, 9, 0, 0, 0},
-        {0, 5, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 3, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {4, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {7, 0, 0, 0, 0, 0, 0, 0, 0},
-        {6, 0, 0, 0, 0, 0, 0, 0, 0}
+        {0, 6, 9, 1, 7, 0, 0, 0, 0},
+        {0, 0, 0, 6, 0, 0, 3, 0, 0},
+        {5, 0, 8, 0, 2, 0, 0, 0, 7},
+        {0, 0, 0, 2, 0, 0, 0, 5, 6},
+        {6, 0, 1, 0, 0, 0, 2, 3, 0},
+        {0, 5, 0, 0, 8, 0, 0, 0, 0},
+        {0, 2, 6, 4, 0, 5, 8, 7, 3},
+        {8, 1, 4, 7, 0, 2, 0, 6, 9},
+        {0, 0, 0, 8, 0, 9, 1, 0, 0}
     };
 
 short gridStats[9][9] = {
@@ -147,7 +147,7 @@ short* checkSquare(short sqr) { //Input quadrant function
     return ans;
 }
 
-short* possibleNums(short x, short y) {
+short* possibleNums(short y, short x) {
   //Creates and fills arrays with the answers
   short *RAarr = new short[9];
   short *CAarr = new short[9];
@@ -195,6 +195,70 @@ short* possibleNums(short x, short y) {
   return ans;
 }
 
+short cutArrLen(short *arr) {
+    short c = 0;
+    for(short i=0; i<9; ++i) {
+        if(arr[i] != 0) {
+            ++c;
+        } else break;
+    }
+    return c;
+}
+
+short* cutArr(short *arr, short len) {
+    short *a = new short[len];
+    for(short i=0; i<len; ++i) {
+        a[i] = arr[i];
+    }
+    return a;
+}
+
+short onlyNumInSquare(short y, short x) {
+    //Creates temporary array to hold the list of solutions and fills it
+    short *temp = new short[9];
+    temp = possibleNums(x, y);
+    //Finds true length of the solutions array and creates a new array with the true length and fills it
+    short l = cutArrLen(temp);
+    short *solutions = new short[l];
+    solutions = cutArr(temp, l);
+
+    //Checks if there is a solution to the given coordinate and returns it
+    short sqr = quadrant(y,x);
+    short ans = 0;
+    bool itIs;
+    for(short c=0; c<l; ++c) {
+        itIs = true;
+        for(short yy=sqNum[sqr][0]; yy<sqNum[sqr][1]+1; ++yy) {
+            for(short xx=sqNum[sqr][2]; xx<sqNum[sqr][3]+1; ++xx) {
+                if(!grid[yy][xx] && ((xx != y) || (yy != x))) {
+                    short tempSL = cutArrLen(possibleNums(yy,xx));
+                    short *tempS = new short[tempSL];
+                    tempS = cutArr(possibleNums(yy,xx),tempSL);
+                    for(short i=0; i<tempSL; ++i) {
+                        if(solutions[c] == tempS[i]) itIs = false;
+                    }
+                }
+            }
+        }
+        if(itIs) {
+            ans = solutions[c];
+            break;
+        }
+    }
+    return ans;
+}
+
+void simpleSolve() {
+    bool solutionAvailable = false;
+    do {
+        for(short i=0; i<9; ++i) {
+            for(short j=0; j<9; ++j) {
+
+            }
+        }
+    } while(solutionAvailable);
+}
+
 int main() {
     
     for(short i=0; i<9; ++i) {
@@ -207,23 +271,10 @@ int main() {
         }
     }
 
-    printGrid();
-    
-    short *temp = new short[9];
-    temp = possibleNums(3,2);
-    short a = 0;
-    for(short i=0; i<9; ++i) {
-      if(temp[i] != 0) ++a;
-    }
-    short *ans = new short[a];
-    for(short i=0; i<a; ++i) {
-      ans[i] = temp[i];
-    }
-    delete[] temp;
-    for(short i=0; i<a; ++i) {
-      cout << "[" << ans[i] << "] ";
-    }
-    cout << endl;
+    //printGrid();
+
+    short a = onlyNumInSquare(5,5);
+    cout << "Solution: " << a;
 
     cout << endl;
     cout << "Done." << endl;
