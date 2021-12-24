@@ -249,19 +249,30 @@ short onlyNumInSquare(short y, short x) {
 }
 
 void simpleSolve() {
-    bool solutionAvailable = false;
+    bool solutionAvailable;
+    short counter = 0;
     do {
-        for(short i=0; i<9; ++i) {
-            for(short j=0; j<9; ++j) {
-
+      ++counter;
+      solutionAvailable = false;
+        for(short y=0; y<9; ++y) {
+            for(short x=0; x<9; ++x) {
+              if(!grid[y][x]) {
+                short e = cutArrLen(possibleNums(y,x));
+                short *tempE = new short[e];
+                tempE = cutArr(possibleNums(y,x),e);
+                if(e == 1) {
+                  grid[y][x] = tempE[0];
+                  solutionAvailable = true;
+                }
+              }
             }
         }
     } while(solutionAvailable);
+    cout << "Ran " << counter << " times" << endl;
 }
 
-int main() {
-    
-    for(short i=0; i<9; ++i) {
+void setLockedPositions() {
+  for(short i=0; i<9; ++i) {
         for(short j=0; j<9; ++j) {
             if(grid[i][j] != 0) {
                 gridStats[i][j] = 1;
@@ -270,11 +281,13 @@ int main() {
             }
         }
     }
+}
 
-    //printGrid();
+int main() {
 
-    short a = onlyNumInSquare(5,5);
-    cout << "Solution: " << a;
+    printGrid();
+    simpleSolve();
+    printGrid();
 
     cout << endl;
     cout << "Done." << endl;
