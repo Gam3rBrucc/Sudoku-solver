@@ -5,7 +5,7 @@ using namespace std;
 struct logData {
   short x;
   short y;
-  short index = 0;
+  short index;
 };
 
 short grid[9][9] = {
@@ -19,18 +19,6 @@ short grid[9][9] = {
         {0, 0, 0, 0, 6, 0, 0, 0, 0},
         {9, 6, 7, 8, 5, 1, 0, 0, 0}
     };
-
-short gridStats[9][9] = {
-    {0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0}
-};
 
 short sqNum[9][4] = {
         {0, 2, 0, 2},
@@ -231,15 +219,18 @@ short onlyNumInSquare(short y, short x) {
     //Checks if there is a solution to the given coordinate and returns it
     short sqr = quadrant(y,x);
     short ans = 0;
+    short *holder;
     bool itIs;
     for(short c=0; c<l; ++c) {
         itIs = true;
         for(short yy=sqNum[sqr][0]; yy<sqNum[sqr][1]+1; ++yy) {
             for(short xx=sqNum[sqr][2]; xx<sqNum[sqr][3]+1; ++xx) {
                 if(!grid[yy][xx] && ((xx != y) || (yy != x))) {
-                    short tempSL = cutArrLen(possibleNums(yy,xx));
+                    holder = new short[9];
+                    holder = possibleNums(yy,xx);
+                    short tempSL = cutArrLen(holder);
                     short *tempS = new short[tempSL];
-                    tempS = cutArr(possibleNums(yy,xx),tempSL);
+                    tempS = cutArr(holder,tempSL);
                     for(short i=0; i<tempSL; ++i) {
                         if(solutions[c] == tempS[i]) itIs = false;
                     }
@@ -256,41 +247,29 @@ short onlyNumInSquare(short y, short x) {
 
 void simpleSolve() {
     bool solutionAvailable;
-    short counter = 0;
+    short *holder;
     do {
-      ++counter;
-      solutionAvailable = false;
-        for(short y=0; y<9; ++y) {
-            for(short x=0; x<9; ++x) {
-              if(!grid[y][x]) {
-                short e = cutArrLen(possibleNums(y,x));
-                short *tempE = new short[e];
-                tempE = cutArr(possibleNums(y,x),e);
-                if(e == 1) {
-                  grid[y][x] = tempE[0];
-                  solutionAvailable = true;
-                } else {
-                    grid[y][x] = onlyNumInSquare(x,y);
-                    if(grid[y][x]) solutionAvailable = true;
+        solutionAvailable = false;
+            for(short y=0; y<9; ++y) {
+                for(short x=0; x<9; ++x) {
+                    if(!grid[y][x]) {
+                        holder = new short[9];
+                        holder = possibleNums(y,x);
+                        short e = cutArrLen(holder);
+                        short *tempE = new short[e];
+                        tempE = cutArr(holder,e);
+                        if(e == 1) {
+                            grid[y][x] = tempE[0];
+                            solutionAvailable = true;
+                        } else {
+                            grid[y][x] = onlyNumInSquare(x,y);
+                            if(grid[y][x]) solutionAvailable = true;
+                        }
+                    }
+
                 }
-              }
-
             }
-        }
     } while(solutionAvailable);
-    cout << "Ran " << counter << " times" << endl;
-}
-
-void setLockedPositions() {
-  for(short i=0; i<9; ++i) {
-        for(short j=0; j<9; ++j) {
-            if(grid[i][j] != 0) {
-                gridStats[i][j] = 1;
-            } else {
-                gridStats[i][j] = 0;
-            }
-        }
-    }
 }
 
 void bruteForce() {
@@ -310,23 +289,20 @@ void bruteForce() {
       if(!grid[y][x]) {
         log[count].x = x;
         log[count].y = y;
+        log[count].index = 0;
         ++count;
       }
     }
   }
-  //Begin brute force
-  bool go;
-  do {
-    go = false;
-    //code
-  } while(go);
+  //Brute force
+  
 }
 
 int main() {
 
     printGrid();
     simpleSolve();
-    setLockedPositions();
+    bruteForce();
     printGrid();
 
     cout << endl;
