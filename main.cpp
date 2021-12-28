@@ -299,7 +299,7 @@ void bruteForce() {
     //cout << "X: " << log[i].x << "  Y: " << log[i].y << "  index: " << log[i].index << endl;
   //}
   //Brute force
-  short YES = 0;
+  int YES = 0;
   short i = 0;
   do {
     //cout << "i = " << i << endl;
