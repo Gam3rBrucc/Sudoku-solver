@@ -9,15 +9,15 @@ struct logData {
 };
 
 short grid[9][9] = {
-        {0, 5, 8, 6, 0, 0, 0, 0, 9},
-        {3, 0, 6, 0, 2, 5, 0, 7, 0},
-        {0, 4, 0, 0, 0, 0, 0, 6, 0},
-        {5, 1, 0, 0, 0, 0, 0, 2, 8},
-        {0, 2, 4, 5, 1, 0, 0, 0, 0},
-        {0, 0, 0, 9, 0, 2, 0, 5, 0},
-        {0, 0, 0, 0, 9, 0, 7, 0, 6},
-        {0, 0, 0, 0, 6, 0, 0, 0, 0},
-        {9, 6, 7, 8, 5, 1, 0, 0, 0}
+        {3, 8, 0, 0, 0, 6, 0, 0, 0},
+        {0, 6, 2, 0, 0, 0, 3, 7, 0},
+        {0, 0, 0, 0, 5, 3, 2, 0, 6},
+        {0, 0, 8, 9, 4, 0, 0, 0, 0},
+        {2, 5, 6, 0, 0, 0, 4, 9, 8},
+        {0, 0, 4, 0, 0, 0, 0, 0, 0},
+        {6, 0, 3, 0, 0, 9, 0, 4, 1},
+        {0, 4, 0, 0, 8, 0, 6, 5, 0},
+        {0, 0, 0, 0, 0, 4, 7, 0, 0}
     };
 
 short sqNum[9][4] = {
@@ -280,6 +280,7 @@ void bruteForce() {
       if(!grid[y][x]) ++lLog;
     }
   }
+  //cout << "lLog = " << lLog << endl;
   //Creates new array of length amount of unsolved units
   logData *log = new logData[lLog];
   //Inicializes array with all relevant data
@@ -294,8 +295,35 @@ void bruteForce() {
       }
     }
   }
+//  for(short i=0; i<lLog; ++i) {
+    //cout << "X: " << log[i].x << "  Y: " << log[i].y << "  index: " << log[i].index << endl;
+  //}
   //Brute force
-  
+  short YES = 0;
+  short i = 0;
+  do {
+    //cout << "i = " << i << endl;
+    short *temp = new short[9];
+    temp = possibleNums(log[i].y, log[i].x);
+    short tempLen = cutArrLen(temp);
+    if(!tempLen) {
+      log[i].index = 0;
+      --i;
+      grid[log[i].y][log[i].x] = 0;
+    } else {
+      if(!temp[log[i].index]) {
+        log[i].index = 0;
+        --i;
+        grid[log[i].y][log[i].x] = 0;
+      } else {
+        grid[log[i].y][log[i].x] = temp[log[i].index];
+        ++log[i].index;
+        ++i;
+      }
+    }
+    ++YES;
+  } while(i < lLog);
+  cout << "Ran " << YES << " times." << endl;
 }
 
 int main() {
@@ -305,6 +333,5 @@ int main() {
     bruteForce();
     printGrid();
 
-    cout << endl;
     cout << "Done." << endl;
 }
